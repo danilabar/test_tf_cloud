@@ -1,12 +1,12 @@
-resource "null_resource" "git" {
-  provisioner "local-exec" {
-    command = "apt install git -y"
-  }
-
-  depends_on = [
-    null_resource.wait
-  ]
-}
+#resource "null_resource" "git" {
+#  provisioner "local-exec" {
+#    command = "apt install git -y"
+#  }
+#
+#  depends_on = [
+#    null_resource.wait
+#  ]
+#}
 
 resource "null_resource" "pip" {
   provisioner "local-exec" {
@@ -14,7 +14,8 @@ resource "null_resource" "pip" {
   }
 
   depends_on = [
-    null_resource.git
+    #null_resource.git
+    null_resource.wait
   ]
 }
 
