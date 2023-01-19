@@ -1,0 +1,10 @@
+---
+- name: Installing tools
+  ansible.builtin.yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - python3
+    - git

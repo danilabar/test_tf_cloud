@@ -1,0 +1,39 @@
+---
+- name: Install Tools
+  hosts: all
+  become: yes
+  become_user: root
+  roles:
+    - install-tools
+
+- name: Install PIP
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+  - name: Download pip installer
+    get_url:
+      url: https://bootstrap.pypa.io/pip/3.6/get-pip.py
+      dest: /tmp/get-pip.py
+  - name: Install pip
+    shell: |
+      /usr/bin/python3 /tmp/get-pip.py
+  - name: Create symbolic link
+    file:
+      src: "/usr/local/bin/pip3"
+      dest: "/usr/local/sbin/pip3"
+      state: link
+
+- name: Install of Requrements Tools
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+    - name: Git checkout kubespray
+      ansible.builtin.git:
+        repo: 'https://github.com/kubernetes-sigs/kubespray'
+        dest: /srv/kubespray
+    - name: Install requirements for kubespray
+      ansible.builtin.pip:
+        requirements: /srv/kubespray/requirements-2.11.txt
+        executable: pip3
