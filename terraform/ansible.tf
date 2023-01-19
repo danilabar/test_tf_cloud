@@ -21,7 +21,7 @@ resource "null_resource" "pip" {
 
 resource "null_resource" "gitclone" {
   provisioner "local-exec" {
-    command = "git clone https://github.com/kubernetes-sigs/kubespray /srv/kubespray"
+    command = "git clone https://github.com/kubernetes-sigs/kubespray /tmp/kubespray"
   }
 
   depends_on = [
@@ -31,7 +31,7 @@ resource "null_resource" "gitclone" {
 
 resource "null_resource" "ansible" {
   provisioner "local-exec" {
-    command = "/usr/local/bin/pip3 install -r /srv/kubespray/requirements-2.11.txt"
+    command = "/usr/local/bin/pip3 install -r /tmp/kubespray/requirements-2.11.txt"
   }
 
   depends_on = [
