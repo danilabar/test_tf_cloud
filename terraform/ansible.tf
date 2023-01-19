@@ -31,7 +31,8 @@ resource "null_resource" "gitclone" {
 
 resource "null_resource" "ansible" {
   provisioner "local-exec" {
-    command = "/usr/local/bin/pip3 install -r /tmp/kubespray/requirements-2.11.txt"
+#    command = "/usr/local/bin/pip3 install -r /tmp/kubespray/requirements-2.11.txt"
+    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
   }
 
   depends_on = [
