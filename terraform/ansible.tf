@@ -1,13 +1,3 @@
-#resource "null_resource" "git" {
-#  provisioner "local-exec" {
-#    command = "apt install git -y"
-#  }
-#
-#  depends_on = [
-#    null_resource.wait
-#  ]
-#}
-
 resource "null_resource" "pip" {
   provisioner "local-exec" {
     command = "curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o /tmp/get-pip.py && python3 /tmp/get-pip.py"
@@ -39,3 +29,13 @@ resource "null_resource" "gitclone" {
 #    null_resource.gitclone
 #  ]
 #}
+
+resource "null_resource" "config_public_vm" {
+  provisioner "local-exec" {
+    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
+  }
+
+  depends_on = [
+    null_resource.gitclone
+  ]
+}
