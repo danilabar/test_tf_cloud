@@ -7,6 +7,10 @@ resource "null_resource" "pip" {
     #null_resource.git
     null_resource.wait
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "null_resource" "gitclone" {
@@ -17,6 +21,10 @@ resource "null_resource" "gitclone" {
   depends_on = [
     null_resource.pip
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 #resource "null_resource" "ansible" {
@@ -38,4 +46,8 @@ resource "null_resource" "config_public_vm" {
   depends_on = [
     null_resource.gitclone
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
