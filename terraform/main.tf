@@ -28,7 +28,7 @@ resource "yandex_compute_instance" "public-vm" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "ubuntu:${file("./id_rsa.pub")}"
     user-data  = <<-EOF
 #!/bin/bash
 yum install python3 -y
@@ -55,7 +55,8 @@ EOF
 
 resource "null_resource" "wait" {
   provisioner "local-exec" {
-    command = "sleep 420"
+    #command = "sleep 420"
+    command = "sleep 20"
   }
 
   depends_on = [
