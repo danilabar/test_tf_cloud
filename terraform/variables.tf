@@ -21,3 +21,7 @@ variable "domain" {
 variable "public-vm-name" {
   default = "public-vm1"
 }
+
+variable "service_account_id" {
+  default = ""
+}
