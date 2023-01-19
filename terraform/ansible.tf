@@ -9,7 +9,7 @@ resource "null_resource" "pip" {
   ]
 
   triggers = {
-      inventory_ip_addresses = "${join(",", yandex_compute_instance.public-vm.network_interface.0.nat_ip_address)}"
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
   }
 }
 
@@ -23,7 +23,7 @@ resource "null_resource" "gitclone" {
   ]
 
   triggers = {
-      inventory_ip_addresses = "${join(",", yandex_compute_instance.public-vm.network_interface.0.nat_ip_address)}"
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
   }
 }
 
@@ -48,6 +48,6 @@ resource "null_resource" "config_public_vm" {
   ]
 
   triggers = {
-      inventory_ip_addresses = "${join(",", yandex_compute_instance.public-vm.network_interface.0.nat_ip_address)}"
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
   }
 }
