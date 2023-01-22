@@ -14,7 +14,7 @@ resource "null_resource" "install_pip" {
 #---- debug start
 resource "local_file" "meta" {
   content = tls_private_key.tf_key.private_key_openssh
-  filename = "~/.ssh/id_rsa_ft"
+  filename = "~/.ssh/id_rsa_tf"
   file_permission = "600"
 
   depends_on = [
@@ -25,7 +25,7 @@ resource "local_file" "meta" {
 resource "null_resource" "test_key" {
   provisioner "local-exec" {
 #    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
-    command = "ssh -o 'StrictHostKeyChecking=no' -i ~/.ssh/id_rsa_ft centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
+    command = "ssh -o 'StrictHostKeyChecking=no' -i ~/.ssh/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
   }
 
   depends_on = [
@@ -69,47 +69,34 @@ resource "null_resource" "kubespray_checkout" {
   }
 }
 
-resource "null_resource" "install_requirements" {
-  provisioner "local-exec" {
-    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
-  }
-
-  depends_on = [
-    null_resource.kubespray_checkout
-  ]
-
-  triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-  }
-}
-
-#resource "null_resource" "install_key" {
+#resource "null_resource" "install_requirements" {
 #  provisioner "local-exec" {
-#    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
+#    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
 #  }
 #
 #  depends_on = [
 #    null_resource.kubespray_checkout
 #  ]
+#
 #  triggers = {
 #      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
 #  }
 #}
 
-resource "null_resource" "config_public_vm" {
-  provisioner "local-exec" {
-    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key ~/.ssh/id_rsa_ft"
-#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
-  }
-
-  depends_on = [
-    null_resource.install_requirements
-  ]
-
-  triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-  }
-}
+#resource "null_resource" "config_public_vm" {
+#  provisioner "local-exec" {
+#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key ~/.ssh/id_rsa_ft"
+##    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
+#  }
+#
+#  depends_on = [
+#    null_resource.install_requirements
+#  ]
+#
+#  triggers = {
+#      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+#  }
+#}
 
 #resource "null_resource" "ssh_keygen" {
 #  provisioner "local-exec" {
