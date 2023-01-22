@@ -28,7 +28,8 @@ resource "yandex_compute_instance" "public-vm" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("./id_rsa.pub")}"
+    ssh-keys = "centos:${file("./id_rsa.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_rsa.pub")}"
     user-data  = <<-EOF
 #!/bin/bash
 yum install python3 -y
@@ -50,6 +51,10 @@ EOF
 #      private_key = "${file("~/.ssh/id_rsa")}"
 #    }
 #  }
+
+  depends_on = [
+    null_resource.ssh_keygen
+  ]
 
 }
 

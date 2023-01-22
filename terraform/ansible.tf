@@ -40,6 +40,7 @@ resource "null_resource" "gitclone" {
 
 resource "null_resource" "config_public_vm" {
   provisioner "local-exec" {
+#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key=$"
     command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
   }
 
