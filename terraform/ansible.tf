@@ -15,7 +15,7 @@ resource "null_resource" "install_pip" {
 resource "null_resource" "install_key" {
   provisioner "local-exec" {
 #    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
-    command = "ssh centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
+    command = "ssh -o 'StrictHostKeyChecking=no' centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
   }
 
   depends_on = [
