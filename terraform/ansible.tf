@@ -11,6 +11,38 @@ resource "null_resource" "install_pip" {
       inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
   }
 }
+#---- debug start
+resource "null_resource" "install_key" {
+  provisioner "local-exec" {
+    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
+  }
+
+  depends_on = [
+    null_resource.install_pip
+  ]
+
+  triggers = {
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+  }
+
+}
+
+resource "null_resource" "install_key" {
+  provisioner "local-exec" {
+    command = "ls -la ~/.ssh/id_rsa && head ~/.ssh/id_rsa"
+  }
+
+  depends_on = [
+    null_resource.install_key
+  ]
+
+  triggers = {
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+  }
+
+}
+
+#---- debug stop
 
 resource "null_resource" "kubespray_checkout" {
   provisioner "local-exec" {
@@ -34,12 +66,29 @@ resource "null_resource" "install_requirements" {
   depends_on = [
     null_resource.kubespray_checkout
   ]
+
+  triggers = {
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+  }
 }
+
+#resource "null_resource" "install_key" {
+#  provisioner "local-exec" {
+#    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
+#  }
+#
+#  depends_on = [
+#    null_resource.kubespray_checkout
+#  ]
+#  triggers = {
+#      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+#  }
+#}
 
 resource "null_resource" "config_public_vm" {
   provisioner "local-exec" {
-    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key=${var.ssh_private_key}"
-#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
+#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key='~/.ssh/id_rsa'"
+    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
   }
 
   depends_on = [
