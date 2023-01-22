@@ -1,6 +1,6 @@
 resource "yandex_compute_instance" "public-vm" {
   name     = var.public-vm-name
-  hostname = "${var.public-vm-name}.${var.domain}"
+  hostname = "${var.public-vm-name}.${terraform.workspace}.${var.domain}"
   zone     = var.a-zone
 
   resources {
@@ -29,42 +29,10 @@ resource "yandex_compute_instance" "public-vm" {
 
   metadata = {
     user-data = local_file.meta.content
-#    ssh-keys = "centos:${file("./id_rsa.pub")}"
-#    user-data  = <<-EOF
-##!/bin/bash
-#yum install python3 -y
-#yum install git -y
-#curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o /tmp/get-pip.py
-#python3 /tmp/get-pip.py
-#git clone https://github.com/kubernetes-sigs/kubespray /srv/kubespray
-#/usr/local/bin/pip3 install -r /srv/kubespray/requirements-2.11.txt
-#EOF
   }
 
   depends_on = [
     local_file.meta
   ]
 
-#  provisioner "file" {
-#  source      = "../ansible"
-#  destination = "/tmp"
-#    connection {
-#      host = self.network_interface.0.nat_ip_address
-#      type     = "ssh"
-#      user     = "centos"
-#      private_key = "${file("~/.ssh/id_rsa")}"
-#    }
-#  }
-
-}
-
-resource "null_resource" "wait" {
-  provisioner "local-exec" {
-    #command = "sleep 420"
-    command = "sleep 20"
-  }
-
-  depends_on = [
-    yandex_compute_instance.public-vm
-  ]
 }

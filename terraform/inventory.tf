@@ -12,17 +12,3 @@ resource "local_file" "inventory" {
     yandex_compute_instance.public-vm
   ]
 }
-
-resource "null_resource" "get_inventory" {
-  provisioner "local-exec" {
-    command = "cat ../ansible/inventory"
-  }
-
-  depends_on = [
-    local_file.inventory
-  ]
-
-  triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-  }
-}

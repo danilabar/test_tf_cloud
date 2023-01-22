@@ -3,16 +3,6 @@ resource "tls_private_key" "tf_key" {
   rsa_bits  = 4096
 }
 
-output "private_key" {
-  value = tls_private_key.tf_key.private_key_openssh
-  sensitive = true
-}
-
-output "public_key" {
-  value = tls_private_key.tf_key.public_key_openssh
-}
-
-
 resource "local_file" "meta" {
   content = <<-DOC
 #cloud-config
@@ -31,3 +21,31 @@ DOC
     tls_private_key.tf_key
   ]
 }
+
+
+resource "local_file" "private_key" {
+  content = tls_private_key.tf_key.private_key_openssh
+  filename = "/tmp/id_rsa_tf"
+  file_permission = "600"
+
+  depends_on = [
+    tls_private_key.tf_key
+  ]
+}
+
+#---- debug start
+resource "null_resource" "test_key" {
+  provisioner "local-exec" {
+    command = "ssh -o 'StrictHostKeyChecking=no' -i /tmp/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
+  }
+
+  depends_on = [
+    null_resource.install_pip
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+
+}
+#---- debug stop

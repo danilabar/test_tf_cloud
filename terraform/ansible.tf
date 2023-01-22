@@ -1,59 +1,26 @@
+resource "null_resource" "wait" {
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+
+  depends_on = [
+    yandex_compute_instance.public-vm
+  ]
+}
+
 resource "null_resource" "install_pip" {
   provisioner "local-exec" {
     command = "curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o /tmp/get-pip.py && python3 /tmp/get-pip.py"
   }
 
-  depends_on = [
-    null_resource.wait
-  ]
-
-  triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-  }
-}
-#---- debug start
-resource "local_file" "private_key" {
-  content = tls_private_key.tf_key.private_key_openssh
-  filename = "/tmp/id_rsa_tf"
-  file_permission = "600"
-
-  depends_on = [
-    tls_private_key.tf_key
-  ]
-}
-
-resource "null_resource" "test_key" {
-  provisioner "local-exec" {
-#    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
-    command = "ssh -o 'StrictHostKeyChecking=no' -i /tmp/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
-  }
-
-  depends_on = [
-    null_resource.install_pip
-  ]
-
-  triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-  }
-
-}
-
-#resource "null_resource" "debug_key" {
-#  provisioner "local-exec" {
-#    command = "ls -la ~/.ssh/id_rsa && head ~/.ssh/id_rsa"
-#  }
-#
 #  depends_on = [
-#    null_resource.install_key
+#    null_resource.wait
 #  ]
-#
-#  triggers = {
-#      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-#  }
-#
-#}
 
-#---- debug stop
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
 
 resource "null_resource" "kubespray_checkout" {
   provisioner "local-exec" {
@@ -65,7 +32,7 @@ resource "null_resource" "kubespray_checkout" {
   ]
 
   triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+      always_run = "${timestamp()}"
   }
 }
 
@@ -79,31 +46,22 @@ resource "null_resource" "install_requirements" {
   ]
 
   triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+      always_run = "${timestamp()}"
   }
 }
 
 resource "null_resource" "config_public_vm" {
   provisioner "local-exec" {
-#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key /tmp/id_rsa_tf"
     command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
   }
 
   depends_on = [
-    null_resource.install_requirements
+    null_resource.install_requirements,
+    local_file.private_key
   ]
 
   triggers = {
-      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+      always_run = "${timestamp()}"
   }
 }
 
-#resource "null_resource" "ssh_keygen" {
-#  provisioner "local-exec" {
-#    command = "ssh-keygen -t rsa -f ~/.ssh/id_rsa -C user@terraform -N ''"
-#  }
-#
-#  triggers = {
-#      always_run = "${timestamp()}"
-#  }
-#}

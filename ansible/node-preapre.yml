@@ -24,16 +24,16 @@
       dest: "/usr/local/sbin/pip3"
       state: link
 
-- name: Install of Requrements Tools
-  hosts: all
-  become: yes
-  become_user: root
-  tasks:
-    - name: Git checkout kubespray
-      ansible.builtin.git:
-        repo: 'https://github.com/kubernetes-sigs/kubespray'
-        dest: /srv/kubespray
-    - name: Install requirements for kubespray
-      ansible.builtin.pip:
-        requirements: /srv/kubespray/requirements-2.11.txt
-        executable: pip3
+#- name: Install of Requrements Tools
+#  hosts: all
+#  become: yes
+#  become_user: root
+#  tasks:
+#    - name: Git checkout kubespray
+#      ansible.builtin.git:
+#        repo: 'https://github.com/kubernetes-sigs/kubespray'
+#        dest: /srv/kubespray
+#    - name: Install requirements for kubespray
+#      ansible.builtin.pip:
+#        requirements: /srv/kubespray/requirements-2.11.txt
+#        executable: pip3
