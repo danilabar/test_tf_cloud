@@ -14,7 +14,7 @@ resource "null_resource" "install_pip" {
 #---- debug start
 resource "local_file" "private_key" {
   content = tls_private_key.tf_key.private_key_openssh
-  filename = "~/.ssh/id_rsa_tf"
+  filename = "/tmp/id_rsa_tf"
   file_permission = "600"
 
   depends_on = [
@@ -25,7 +25,7 @@ resource "local_file" "private_key" {
 resource "null_resource" "test_key" {
   provisioner "local-exec" {
 #    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
-    command = "ssh -o 'StrictHostKeyChecking=no' -i ~/.ssh/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
+    command = "ssh -o 'StrictHostKeyChecking=no' -i /tmp/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
   }
 
   depends_on = [
