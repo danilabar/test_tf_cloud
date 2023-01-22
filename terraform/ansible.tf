@@ -12,7 +12,7 @@ resource "null_resource" "install_pip" {
   }
 }
 #---- debug start
-resource "local_file" "meta" {
+resource "local_file" "private_key" {
   content = tls_private_key.tf_key.private_key_openssh
   filename = "~/.ssh/id_rsa_tf"
   file_permission = "600"
