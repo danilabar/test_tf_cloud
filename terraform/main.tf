@@ -28,7 +28,8 @@ resource "yandex_compute_instance" "public-vm" {
   }
 
   metadata = {
-    ssh-keys = "centos:${file("./id_rsa.pub")}"
+    user-data = "${file("./meta.txt")}"
+#    ssh-keys = "centos:${file("./id_rsa.pub")}"
 #    user-data  = <<-EOF
 ##!/bin/bash
 #yum install python3 -y
@@ -39,6 +40,10 @@ resource "yandex_compute_instance" "public-vm" {
 #/usr/local/bin/pip3 install -r /srv/kubespray/requirements-2.11.txt
 #EOF
   }
+
+  depends_on = [
+    local_file.meta
+  ]
 
 #  provisioner "file" {
 #  source      = "../ansible"

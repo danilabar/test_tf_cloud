@@ -12,10 +12,10 @@ resource "null_resource" "install_pip" {
   }
 }
 #---- debug start
-resource "null_resource" "install_key" {
+resource "null_resource" "test_key" {
   provisioner "local-exec" {
 #    command = "echo ${var.ssh_private_key} > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"
-    command = "ssh -o 'StrictHostKeyChecking=no' centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
+    command = "ssh -o 'StrictHostKeyChecking=no' -i ${tls_private_key.tf_key.private_key_openssh} centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
   }
 
   depends_on = [
@@ -88,8 +88,8 @@ resource "null_resource" "install_requirements" {
 
 resource "null_resource" "config_public_vm" {
   provisioner "local-exec" {
-#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key='~/.ssh/id_rsa'"
-    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
+    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key=${tls_private_key.tf_key.private_key_openssh}"
+#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
   }
 
   depends_on = [
