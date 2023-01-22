@@ -37,14 +37,17 @@ resource "null_resource" "kubespray_checkout" {
 }
 
 resource "null_resource" "copy_k8s_cluster_config" {
-  provisioner "file" {
-    source      = "../ansible/"
-    destination = "/tmp/kubespray/inventory"
+#  provisioner "file" {
+#    source      = "../ansible/"
+#    destination = "/tmp/kubespray/inventory"
+#  }
+  provisioner "local-exec" {
+    command = "cp ../ansible/ /tmp/kubespray/inventory/"
   }
 
   depends_on = [
-    null_resource.kubespray_checkout,
-    local_file.inventory
+    local_file.inventory,
+    null_resource.kubespray_checkout
   ]
 
   triggers = {
