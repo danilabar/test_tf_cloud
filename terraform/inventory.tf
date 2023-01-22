@@ -14,7 +14,7 @@ resource "local_file" "inventory" {
 
     [all:vars]
     ansible_user=centos
-    loadbalancer_apiserver[address]=TBD
+    loadbalancer_apiserver[address]=${yandex_lb_network_load_balancer.k8s-lb.listener.*.external_address_spec[0].*.address[0]}
     loadbalancer_apiserver[port]=6443
 
     # ## configure a bastion host if your nodes are not directly reachable
@@ -47,7 +47,8 @@ resource "local_file" "inventory" {
   filename = "../ansible/netology-cluster/inventory"
 
   depends_on = [
-    yandex_compute_instance.k8s-cluster
+    yandex_compute_instance.k8s-cluster,
+    yandex_lb_network_load_balancer.k8s-lb
   ]
 }
 
