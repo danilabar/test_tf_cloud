@@ -28,7 +28,7 @@ resource "yandex_compute_instance" "public-vm" {
   }
 
   metadata = {
-    user-data = "${file("./meta.txt")}"
+    user-data = local_file.meta.content
 #    ssh-keys = "centos:${file("./id_rsa.pub")}"
 #    user-data  = <<-EOF
 ##!/bin/bash
