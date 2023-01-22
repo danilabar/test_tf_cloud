@@ -42,7 +42,7 @@ resource "null_resource" "copy_k8s_cluster_config" {
 #    destination = "/tmp/kubespray/inventory"
 #  }
   provisioner "local-exec" {
-    command = "cp -r ../ansible/ /tmp/kubespray/inventory/"
+    command = "cp -r ../ansible/ /tmp/kubespray/inventory/ && ls -la ./tmp/kubespray/inventory/"
   }
 
   depends_on = [
@@ -72,7 +72,7 @@ resource "null_resource" "install_requirements" {
 resource "null_resource" "config_k8s_cluster" {
   provisioner "local-exec" {
 #    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
-    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i /tmp/kubespray/inventory/netology-cluster/inventory /tmp/kubespray/cluster.yml -b -v"
+    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ./tmp/kubespray/inventory/netology-cluster/inventory ./tmp/kubespray/cluster.yml -b -v"
   }
 
   depends_on = [
