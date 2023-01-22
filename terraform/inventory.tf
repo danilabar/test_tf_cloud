@@ -15,8 +15,7 @@ resource "local_file" "inventory" {
 
 resource "null_resource" "get_inventory" {
   provisioner "local-exec" {
-    command = "cat ../ansible/inventory"
-    command = "cat ~/.ssh/id_rsa.pub"
+    command = "cat ../ansible/inventory && cat ~/.ssh/id_rsa.pub"
   }
 
   depends_on = [
