@@ -69,34 +69,34 @@ resource "null_resource" "kubespray_checkout" {
   }
 }
 
-#resource "null_resource" "install_requirements" {
-#  provisioner "local-exec" {
-#    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
-#  }
-#
-#  depends_on = [
-#    null_resource.kubespray_checkout
-#  ]
-#
-#  triggers = {
-#      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-#  }
-#}
+resource "null_resource" "install_requirements" {
+  provisioner "local-exec" {
+    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
+  }
 
-#resource "null_resource" "config_public_vm" {
-#  provisioner "local-exec" {
-#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key ~/.ssh/id_rsa_ft"
-##    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
-#  }
-#
-#  depends_on = [
-#    null_resource.install_requirements
-#  ]
-#
-#  triggers = {
-#      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
-#  }
-#}
+  depends_on = [
+    null_resource.kubespray_checkout
+  ]
+
+  triggers = {
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+  }
+}
+
+resource "null_resource" "config_public_vm" {
+  provisioner "local-exec" {
+    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml --private-key /tmp/id_rsa_ft"
+#    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
+  }
+
+  depends_on = [
+    null_resource.install_requirements
+  ]
+
+  triggers = {
+      inventory_ip_addresses = yandex_compute_instance.public-vm.network_interface.0.nat_ip_address
+  }
+}
 
 #resource "null_resource" "ssh_keygen" {
 #  provisioner "local-exec" {
