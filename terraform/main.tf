@@ -29,17 +29,16 @@ resource "yandex_compute_instance" "public-vm" {
 
   metadata = {
     ssh-keys = "centos:${file("./id_rsa.pub")}"
-    ssh-keys = "centos:${file("~/.ssh/id_rsa.pub")}"
-    user-data  = <<-EOF
-#!/bin/bash
-yum install python3 -y
-yum install git -y
-curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o /tmp/get-pip.py
-python3 /tmp/get-pip.py
-git clone https://github.com/kubernetes-sigs/kubespray /srv/kubespray
-/usr/local/bin/pip3 install -r /srv/kubespray/requirements-2.11.txt
-EOF
-  }
+#    user-data  = <<-EOF
+##!/bin/bash
+#yum install python3 -y
+#yum install git -y
+#curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o /tmp/get-pip.py
+#python3 /tmp/get-pip.py
+#git clone https://github.com/kubernetes-sigs/kubespray /srv/kubespray
+#/usr/local/bin/pip3 install -r /srv/kubespray/requirements-2.11.txt
+#EOF
+#  }
 
 #  provisioner "file" {
 #  source      = "../ansible"
@@ -51,10 +50,6 @@ EOF
 #      private_key = "${file("~/.ssh/id_rsa")}"
 #    }
 #  }
-
-  depends_on = [
-    null_resource.ssh_keygen
-  ]
 
 }
 

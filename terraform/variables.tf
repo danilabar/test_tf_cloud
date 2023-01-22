@@ -25,3 +25,7 @@ variable "public-vm-name" {
 variable "service_account_id" {
   default = ""
 }
+
+variable "ssh_private_key" {
+  default = ""
+}
