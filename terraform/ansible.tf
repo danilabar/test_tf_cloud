@@ -27,7 +27,7 @@ resource "null_resource" "install_key" {
 
 }
 
-resource "null_resource" "install_key" {
+resource "null_resource" "debug_key" {
   provisioner "local-exec" {
     command = "ls -la ~/.ssh/id_rsa && head ~/.ssh/id_rsa"
   }
