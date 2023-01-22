@@ -38,7 +38,7 @@ resource "yandex_compute_instance" "public-vm" {
 #git clone https://github.com/kubernetes-sigs/kubespray /srv/kubespray
 #/usr/local/bin/pip3 install -r /srv/kubespray/requirements-2.11.txt
 #EOF
-#  }
+  }
 
 #  provisioner "file" {
 #  source      = "../ansible"
