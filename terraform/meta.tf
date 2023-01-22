@@ -34,18 +34,18 @@ resource "local_file" "private_key" {
 }
 
 #---- debug start
-resource "null_resource" "test_key" {
-  provisioner "local-exec" {
-    command = "ssh -o 'StrictHostKeyChecking=no' -i /tmp/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
-  }
-
-  depends_on = [
-    null_resource.install_pip
-  ]
-
-  triggers = {
-      always_run = "${timestamp()}"
-  }
-
-}
+#resource "null_resource" "test_key" {
+#  provisioner "local-exec" {
+#    command = "ssh -o 'StrictHostKeyChecking=no' -i /tmp/id_rsa_tf centos@${yandex_compute_instance.public-vm.network_interface.0.nat_ip_address} whoami"
+#  }
+#
+#  depends_on = [
+#    null_resource.install_pip
+#  ]
+#
+#  triggers = {
+#      always_run = "${timestamp()}"
+#  }
+#
+#}
 #---- debug stop
