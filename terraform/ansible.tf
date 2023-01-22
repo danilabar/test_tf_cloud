@@ -77,7 +77,7 @@ resource "null_resource" "config_k8s_cluster" {
 
   depends_on = [
     null_resource.install_requirements,
-    local_file.private_key
+    local_file.private_key,
     null_resource.copy_k8s_cluster_config
   ]
 
