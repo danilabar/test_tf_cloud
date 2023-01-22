@@ -36,32 +36,48 @@ resource "null_resource" "kubespray_checkout" {
   }
 }
 
-#resource "null_resource" "install_requirements" {
-#  provisioner "local-exec" {
-#    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
-#  }
-#
-#  depends_on = [
-#    null_resource.kubespray_checkout
-#  ]
-#
-#  triggers = {
-#      always_run = "${timestamp()}"
-#  }
-#}
+resource "null_resource" "copy_k8s_cluster_config" {
+  provisioner "file" {
+    source      = "../ansible/"
+    destination = "/tmp/kubespray/inventory/"
+  }
 
-#resource "null_resource" "config_public_vm" {
-#  provisioner "local-exec" {
+  depends_on = [
+    null_resource.kubespray_checkout
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "install_requirements" {
+  provisioner "local-exec" {
+    command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
+  }
+
+  depends_on = [
+    null_resource.kubespray_checkout
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "config_k8s_cluster" {
+  provisioner "local-exec" {
 #    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i ../ansible/inventory ../ansible/node-preapre.yml"
-#  }
-#
-#  depends_on = [
-#    null_resource.install_requirements,
-#    local_file.private_key
-#  ]
-#
-#  triggers = {
-#      always_run = "${timestamp()}"
-#  }
-#}
+    command = "ANSIBLE_FORCE_COLOR=1 ansible-playbook -i /tmp/kubespray/inventory/netology-cluster/inventory.ini /tmp/kubespray/cluster.yml -b -v"
+  }
+
+  depends_on = [
+    null_resource.install_requirements,
+    local_file.private_key
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
 
