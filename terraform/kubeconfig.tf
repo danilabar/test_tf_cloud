@@ -38,8 +38,8 @@ resource "null_resource" "mkdir_kube_config" {
 
 resource "null_resource" "copy_kube_config" {
   provisioner "local-exec" {
-#    command = "scp centos@${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}:/home/centos/.kube_config $HOME/.kube/config"
-    command = "scp centos@${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}:/home/centos/original-ks.cfg $HOME/.kube/config"
+#    command = "scp -o 'StrictHostKeyChecking no' centos@${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}:/home/centos/.kube_config $HOME/.kube/config"
+    command = "scp -o 'StrictHostKeyChecking no' centos@${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}:/home/centos/original-ks.cfg $HOME/.kube/config"
   }
 
   depends_on = [
