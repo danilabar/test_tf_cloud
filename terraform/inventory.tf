@@ -6,16 +6,17 @@ resource "local_file" "inventory" {
     # ## different ip than the default iface
     # ## We should set etcd_member_name for etcd cluster. The node that is not a etcd member do not need to set the value, or can set the empty string value.
     [all]
-    node1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address} etcd_member_name=etcd1
-    node2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address} etcd_member_name=etcd2
-    node3 ansible_host=${yandex_compute_instance.k8s-cluster[2].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[2].network_interface.0.ip_address} etcd_member_name=etcd3
-    cp1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address}
-    cp2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address}
+    node1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address}
+    node2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address}
+    node3 ansible_host=${yandex_compute_instance.k8s-cluster[2].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[2].network_interface.0.ip_address}
+    cp1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address} etcd_member_name=etcd1
+    cp2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address} etcd_member_name=etcd2
+    cp3 ansible_host=${yandex_compute_instance.k8s-cluster[2].network_interface.0.nat_ip_address}  ip=${yandex_compute_instance.k8s-cluster[2].network_interface.0.ip_address} etcd_member_name=etcd3
 
     [all:vars]
     ansible_user=centos
-    loadbalancer_apiserver[address]=${yandex_lb_network_load_balancer.k8s-lb.listener.*.external_address_spec[0].*.address[0]}
-    loadbalancer_apiserver[port]=6443
+    loadbalancer_apiserver.address=${yandex_lb_network_load_balancer.k8s-lb.listener.*.external_address_spec[0].*.address[0]}
+    loadbalancer_apiserver.port=6443
 
     # ## configure a bastion host if your nodes are not directly reachable
     # [bastion]
@@ -24,11 +25,12 @@ resource "local_file" "inventory" {
     [kube_control_plane]
     cp1
     cp2
+    cp3
 
     [etcd]
-    node1
-    node2
-    node3
+    cp1
+    cp2
+    cp3
 
     [kube_node]
     node1
