@@ -7,9 +7,9 @@ resource "local_file" "inventory" {
 # ## We should set etcd_member_name for etcd cluster. The node that is not a etcd member do not need to set the value, or can set the empty string value.
 [all]
 #node1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address} ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address}
-node2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address} ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address}
-node3 ansible_host=${yandex_compute_instance.k8s-cluster[2].network_interface.0.nat_ip_address} ip=${yandex_compute_instance.k8s-cluster[2].network_interface.0.ip_address}
-cp1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address} etcd_member_name=etcd1 ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address}
+node2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address} #ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address}
+node3 ansible_host=${yandex_compute_instance.k8s-cluster[2].network_interface.0.nat_ip_address} #ip=${yandex_compute_instance.k8s-cluster[2].network_interface.0.ip_address}
+cp1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address} etcd_member_name=etcd1 #ip=${yandex_compute_instance.k8s-cluster[0].network_interface.0.ip_address}
 #cp2 ansible_host=${yandex_compute_instance.k8s-cluster[1].network_interface.0.nat_ip_address} ip=${yandex_compute_instance.k8s-cluster[1].network_interface.0.ip_address} etcd_member_name=etcd2
 #cp3 ansible_host=${yandex_compute_instance.k8s-cluster[2].network_interface.0.nat_ip_address} ip=${yandex_compute_instance.k8s-cluster[2].network_interface.0.ip_address} etcd_member_name=etcd3
 
