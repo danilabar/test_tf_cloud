@@ -1,3 +1,17 @@
+resource "null_resource" "mkdir_kube_config" {
+  provisioner "local-exec" {
+    command = "mkdir ~/.kube"
+  }
+
+  depends_on = [
+    null_resource.wait
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
 resource "null_resource" "prepare_copy_kube_config" {
   provisioner "remote-exec" {
     inline = [
@@ -14,21 +28,7 @@ resource "null_resource" "prepare_copy_kube_config" {
   }
 
   depends_on = [
-    null_resource.wait
-  ]
-
-  triggers = {
-      always_run = "${timestamp()}"
-  }
-}
-
-resource "null_resource" "mkdir_kube_config" {
-  provisioner "local-exec" {
-    command = "mkdir ~/.kube"
-  }
-
-  depends_on = [
-    null_resource.wait
+    null_resource.config_k8s_cluster
   ]
 
   triggers = {
@@ -43,7 +43,7 @@ resource "null_resource" "copy_kube_config" {
   }
 
   depends_on = [
-    null_resource.mkdir_kube_config
+    null_resource.prepare_copy_kube_config
   ]
 
   triggers = {
