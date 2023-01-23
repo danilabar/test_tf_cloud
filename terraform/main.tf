@@ -20,6 +20,7 @@ resource "yandex_compute_instance" "k8s-cluster" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-public[count.index].id
     nat       = true
+    ipv6      = false
   }
 
   scheduling_policy {
