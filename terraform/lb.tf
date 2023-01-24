@@ -23,9 +23,9 @@ resource "yandex_lb_network_load_balancer" "k8s-lb" {
   name = "${terraform.workspace}-k8s-lb"
 
   listener {
-    name        = "k8s-listener"
-    port        = 6443
-    target_port = 6443
+    name        = "grafana-listener"
+    port        = 80
+    target_port = 30090
     external_address_spec {
       ip_version = "ipv4"
     }
@@ -35,10 +35,10 @@ resource "yandex_lb_network_load_balancer" "k8s-lb" {
     target_group_id = yandex_lb_target_group.k8s_lb_tg.id
 
     healthcheck {
-      name = "https"
+      name = "http"
       http_options {
-        port = 6443
-        path = "/"
+        port = 30090
+        path = "/login"
       }
     }
   }
