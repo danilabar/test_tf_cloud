@@ -1,3 +1,31 @@
+resource "null_resource" "dnl_install_kubectl" {
+  provisioner "local-exec" {
+    command = "curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl"
+  }
+
+#  depends_on = [
+#    null_resource.copy_kube_config
+#  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "install_kubectl" {
+  provisioner "local-exec" {
+    command = "chmod +x ./kubectl && ./kubectl version --client"
+  }
+
+  depends_on = [
+    null_resource.dnl_install_kubectl
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
 resource "null_resource" "mkdir_kube_config" {
   provisioner "local-exec" {
     command = "mkdir ~/.kube"
@@ -54,6 +82,20 @@ resource "null_resource" "copy_kube_config" {
 resource "null_resource" "debug_copy_kube_config" {
   provisioner "local-exec" {
     command = "cat $HOME/.kube/config"
+  }
+
+  depends_on = [
+    null_resource.copy_kube_config
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "get_pods" {
+  provisioner "local-exec" {
+    command = "./kubectl get pods --all-namespaces"
   }
 
   depends_on = [

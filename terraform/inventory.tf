@@ -15,8 +15,8 @@ cp1 ansible_host=${yandex_compute_instance.k8s-cluster[0].network_interface.0.na
 
 [all:vars]
 ansible_user=centos
-loadbalancer_apiserver.address=${yandex_lb_network_load_balancer.k8s-lb.listener.*.external_address_spec[0].*.address[0]}
-loadbalancer_apiserver.port=6443
+#loadbalancer_apiserver.address=${yandex_lb_network_load_balancer.k8s-lb.listener.*.external_address_spec[0].*.address[0]}
+#loadbalancer_apiserver.port=6443
 
 # ## configure a bastion host if your nodes are not directly reachable
 # [bastion]
