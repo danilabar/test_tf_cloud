@@ -81,7 +81,7 @@ resource "null_resource" "copy_kube_config" {
 
 resource "null_resource" "add_ext_address_kube_config" {
   provisioner "local-exec" {
-    command = "sed -i 's/127.0.0.1/${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}/g' .kube/config"
+    command = "sed -i 's/127.0.0.1/${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}/g' $HOME/.kube/config"
   }
 
   depends_on = [
