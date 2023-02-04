@@ -55,6 +55,34 @@ resource "null_resource" "copy_k8s_cluster_config" {
   }
 }
 
+resource "null_resource" "add_supplementary_address" {
+  provisioner "local-exec" {
+    command = "echo 'supplementary_addresses_in_ssl_keys: [${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}]' >> /tmp/kubespray/inventory/netology-cluster/group_vars/k8s_cluster/k8s-cluster.yml"
+  }
+
+  depends_on = [
+    null_resource.copy_k8s_cluster_config
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "debug_supplementary_address" {
+  provisioner "local-exec" {
+    command = "cat /tmp/kubespray/inventory/netology-cluster/group_vars/k8s_cluster/k8s-cluster.yml | grep supplementary_addresses_in_ssl_keys"
+  }
+
+  depends_on = [
+    null_resource.add_supplementary_address
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
 resource "null_resource" "install_requirements" {
   provisioner "local-exec" {
     command = "pip3 install -r /tmp/kubespray/requirements-2.11.txt"
@@ -77,7 +105,7 @@ resource "null_resource" "config_k8s_cluster" {
   depends_on = [
     null_resource.install_requirements,
     local_file.private_key,
-    null_resource.copy_k8s_cluster_config
+    null_resource.add_supplementary_address
   ]
 
   triggers = {

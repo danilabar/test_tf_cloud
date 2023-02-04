@@ -43,7 +43,7 @@ resource "null_resource" "mkdir_kube_config" {
 resource "null_resource" "prepare_copy_kube_config" {
   provisioner "remote-exec" {
     inline = [
-      "sudo cp /root/.kube/config ~/.kube/config && sudo chown $USER:$USER ~/.kube/config"
+      "mkdir ~/.kube && sudo cp /root/.kube/config ~/.kube/config && sudo chown $USER:$USER ~/.kube/config"
 #      "sudo cp /root/original-ks.cfg ~/original-ks.cfg && sudo chown $USER:$USER ~/original-ks.cfg"
     ]
   }
@@ -79,13 +79,27 @@ resource "null_resource" "copy_kube_config" {
   }
 }
 
-resource "null_resource" "debug_copy_kube_config" {
+resource "null_resource" "add_ext_address_kube_config" {
   provisioner "local-exec" {
-    command = "cat $HOME/.kube/config"
+    command = "sed -i 's/127.0.0.1/${yandex_compute_instance.k8s-cluster[0].network_interface.0.nat_ip_address}/g' .kube/config"
   }
 
   depends_on = [
     null_resource.copy_kube_config
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "debug_copy_kube_config" {
+  provisioner "local-exec" {
+    command = "cat $HOME/.kube/config | grep server"
+  }
+
+  depends_on = [
+    null_resource.add_ext_address_kube_config
   ]
 
   triggers = {
@@ -99,7 +113,7 @@ resource "null_resource" "get_pods" {
   }
 
   depends_on = [
-    null_resource.copy_kube_config
+    null_resource.add_ext_address_kube_config
   ]
 
   triggers = {
