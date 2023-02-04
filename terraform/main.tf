@@ -6,7 +6,7 @@ resource "yandex_compute_instance" "k8s-cluster" {
   resources {
     cores  = 4
     memory = 8
-    core_fraction = 50
+#    core_fraction = 20
   }
 
   boot_disk {
