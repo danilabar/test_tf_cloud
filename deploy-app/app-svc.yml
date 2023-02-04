@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    app: wonder-app
+  name: wonder-app
+spec:
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: http
+      nodePort: 30880
+  selector:
+    app: wonder-app
+  type: NodePort

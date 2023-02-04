@@ -4,9 +4,9 @@ resource "yandex_compute_instance" "k8s-cluster" {
   hostname = "${terraform.workspace}-k8s-node${count.index + 1}"
   zone     = var.a-zones[count.index]
   resources {
-    cores  = 2
-    memory = 4
-    core_fraction = 20
+    cores  = 4
+    memory = 8
+    core_fraction = 50
   }
 
   boot_disk {

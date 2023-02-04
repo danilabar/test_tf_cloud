@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: wonder-app
+    release: {{ .Release.Name }}
+  name: "wonder-app-{{ .Release.Name }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wonder-app
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: wonder-app
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+#        - image: danilabar/wonder_app:latest
+        - image: "{{ .Values.image_frontend.repository }}:{{ .Values.image_frontend.tag | default .Values.image.tag }}"
+          name: frontend
+          ports:
+            - containerPort: 80
+              name: http
+      restartPolicy: Always

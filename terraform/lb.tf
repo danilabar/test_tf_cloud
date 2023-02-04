@@ -24,8 +24,24 @@ resource "yandex_lb_network_load_balancer" "k8s-lb" {
 
   listener {
     name        = "grafana-listener"
-    port        = 80
+    port        = 3000
     target_port = 30090
+    external_address_spec {
+      ip_version = "ipv4"
+    }
+  }
+  listener {
+    name        = "jenkins-listener"
+    port        = 8080
+    target_port = 32000
+    external_address_spec {
+      ip_version = "ipv4"
+    }
+  }
+  listener {
+    name        = "app-listener"
+    port        = 80
+    target_port = 30880
     external_address_spec {
       ip_version = "ipv4"
     }

@@ -1,0 +1,8 @@
+image_frontend:
+  repository: "danilabar/wonder_app"
+  tag: ""
+
+image:
+  tag: "latest"
+
+namespace: ""

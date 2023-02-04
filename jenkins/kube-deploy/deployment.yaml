@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: devops-tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-server
+  template:
+    metadata:
+      labels:
+        app: jenkins-server
+    spec:
+      securityContext:
+            fsGroup: 1000
+      serviceAccountName: jenkins-admin
+      containers:
+        - name: jenkins
+          image: danilabar/jenkins-with-addons:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
+          ports:
+            - name: httpport
+              containerPort: 8080
+            - name: jnlpport
+              containerPort: 50000
+          livenessProbe:
+            httpGet:
+              path: "/login"
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/login"
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: DOCKER_HOST
+              value: tcp://127.0.0.1:2375
+            - name: DOCKER_USER_ID
+              value: $DOCKER_USER_ID
+            - name: DOCKER_PASSWORD
+              value: $DOCKER_PASSWORD
+            - name: JENKINS_ADMIN_ID
+              value: "admin"
+            - name: JENKINS_ADMIN_PASSWORD
+              value: $JENKINS_ADMIN_PASSWORD
+            - name: JENKINS_LOCATION_URL
+              value: "http://127.0.0.1:32000/"
+        - name: dind
+          image: "docker:dind"
+          imagePullPolicy: Always
+          command: ["dockerd", "--host", "tcp://127.0.0.1:2375"]
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: launcher-storage
+              mountPath: /var/lib/docker
+              subPath: docker
+      volumes:
+        - name: launcher-storage
+          emptyDir: {}

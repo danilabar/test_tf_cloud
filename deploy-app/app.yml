@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: wonder-app
+  name: wonder-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wonder-app
+  template:
+    metadata:
+      labels:
+        app: wonder-app
+    spec:
+      containers:
+        - image: danilabar/wonder_app:latest
+          name: frontend
+          ports:
+            - containerPort: 80
+              name: http
+      restartPolicy: Always
