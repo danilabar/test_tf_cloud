@@ -26,6 +26,20 @@ resource "null_resource" "install_kubectl" {
   }
 }
 
+resource "null_resource" "export_env_kube_config" {
+  provisioner "local-exec" {
+    command = "export KUBECONFIG=$HOME/.kube/config && echo $KUBECONFIG"
+  }
+
+  depends_on = [
+    null_resource.dnl_install_kubectl
+  ]
+
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
 resource "null_resource" "mkdir_kube_config" {
   provisioner "local-exec" {
     command = "mkdir ~/.kube"
