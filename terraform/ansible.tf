@@ -13,9 +13,15 @@ resource "null_resource" "install_pip" {
     command = "curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o /tmp/get-pip.py && python3 /tmp/get-pip.py"
   }
 
-#  depends_on = [
-#    null_resource.wait
-#  ]
+  triggers = {
+      always_run = "${timestamp()}"
+  }
+}
+
+resource "null_resource" "install_envsubst" {
+  provisioner "local-exec" {
+    command = "curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-`uname -s`-`uname -m` -o envsubst && chmod +x envsubst"
+  }
 
   triggers = {
       always_run = "${timestamp()}"
@@ -37,10 +43,6 @@ resource "null_resource" "kubespray_checkout" {
 }
 
 resource "null_resource" "copy_k8s_cluster_config" {
-#  provisioner "file" {
-#    source      = "../ansible/"
-#    destination = "/tmp/kubespray/inventory"
-#  }
   provisioner "local-exec" {
     command = "cp -r ../ansible/netology-cluster/ /tmp/kubespray/inventory/ && ls -la /tmp/kubespray/inventory/netology-cluster/"
   }

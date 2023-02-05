@@ -18,7 +18,7 @@ resource "null_resource" "deploy_jenkins" {
   }
 
   provisioner "local-exec" {
-    command = "envsubst < ../jenkins/kube-deploy/deployment.yaml | ./kubectl apply -f -"
+    command = "./envsubst < ../jenkins/kube-deploy/deployment.yaml | ./kubectl apply -f -"
   }
 
   depends_on = [
